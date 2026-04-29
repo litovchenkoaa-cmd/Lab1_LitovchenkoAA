@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\LitovchenkoAA\\source\\repos\\UserRegistrationValidator\\UserRegistrationValidator\\UserRegistrationValidator.csproj",
+      "projectUniqueName": "G:\\Тестирование\\Lab1_LitovchenkoAA\\UserRegistrationValidator\\UserRegistrationValidator\\UserRegistrationValidator.csproj",
       "projectName": "UserRegistrationValidator",
-      "projectPath": "C:\\Users\\LitovchenkoAA\\source\\repos\\UserRegistrationValidator\\UserRegistrationValidator\\UserRegistrationValidator.csproj",
+      "projectPath": "G:\\Тестирование\\Lab1_LitovchenkoAA\\UserRegistrationValidator\\UserRegistrationValidator\\UserRegistrationValidator.csproj",
       "packagesPath": "C:\\Users\\LitovchenkoAA\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\LitovchenkoAA\\source\\repos\\UserRegistrationValidator\\UserRegistrationValidator\\obj\\",
+      "outputPath": "G:\\Тестирование\\Lab1_LitovchenkoAA\\UserRegistrationValidator\\UserRegistrationValidator\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -73,7 +73,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.309/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

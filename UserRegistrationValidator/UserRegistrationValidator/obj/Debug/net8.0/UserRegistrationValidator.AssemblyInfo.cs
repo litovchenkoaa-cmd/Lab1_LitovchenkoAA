@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("UserRegistrationValidator")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a4207742988725b3ee5b06eba9e74e907753c45e")]
 [assembly: System.Reflection.AssemblyProductAttribute("UserRegistrationValidator")]
 [assembly: System.Reflection.AssemblyTitleAttribute("UserRegistrationValidator")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

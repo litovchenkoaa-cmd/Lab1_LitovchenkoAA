@@ -9,16 +9,7 @@ namespace UserRegistrationValidator
 {
     public static class RegistrationValidator
     {
-        private static string EscapeForCharClass(string chars)
-        {
-            // Порядок важен: сначала обрабатываем обратный слэш
-            return chars
-                .Replace(@"\", @"\\")  // Экранируем обратный слэш
-                .Replace("]", @"\]")   // Закрывающая квадратная скобка
-                .Replace("^", @"\^")   // Каретка (если не в начале класса)
-                .Replace("-", @"\-");  // Дефис (чтобы не создал диапазон)
-        }
-        // Запрещённые логины (регистронезависимые)
+        // Запрещённые логины
         private static readonly HashSet<string> ForbiddenLogins = new HashSet<string>(
             StringComparer.OrdinalIgnoreCase)
         {
@@ -29,14 +20,20 @@ namespace UserRegistrationValidator
         // Допустимые спецсимволы для пароля
         private const string SpecialChars = "!@#$%^&*()_+-=[]{};':\"\\|,.<>/?";
 
-        /// <summary>
-        /// Проверяет данные регистрации. Возвращает (true, "") в случае успеха,
-        /// иначе (false, сообщение об ошибке).
-        /// </summary>
+        private static string EscapeForCharClass(string chars)
+        {
+
+            return chars
+                .Replace(@"\", @"\\")
+                .Replace("]", @"\]")
+                .Replace("^", @"\^")
+                .Replace("-", @"\-");
+        }
+
+
         public static (bool Success, string Message) Validate(
             string login, string password, string confirmPassword)
         {
-            // 1. Логин не может быть null или пустым
             if (string.IsNullOrEmpty(login))
                 return (false, "Логин не может быть пустым.");
 
@@ -48,7 +45,7 @@ namespace UserRegistrationValidator
             }
             else if (IsEmailFormat(login))
             {
-                // Простая, но достаточная проверка email
+                
                 if (!Regex.IsMatch(login,
                         @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"))
                     return (false, "Неверный формат электронной почты.");
@@ -67,17 +64,16 @@ namespace UserRegistrationValidator
                 return (false, "Данный логин запрещён к использованию.");
 
             // 3. Проверка пароля
+            // Допустимые символы: кириллица, цифры, спецсимволы
             if (string.IsNullOrEmpty(password))
                 return (false, "Пароль не может быть пустым.");
 
             if (password.Length < 7)
                 return (false, "Пароль должен содержать минимум 7 символов.");
 
-            // Допустимые символы: кириллица, цифры, спецсимволы
-            // Формируем экранированную версию для использования в [...]
+            
             string specialCharsEscaped = EscapeForCharClass(SpecialChars);
 
-            // 1. Проверка: пароль содержит только разрешённые символы
             string allowedPwdPattern = $"^[А-ЯЁа-яё\\d{specialCharsEscaped}]+$";
             if (!Regex.IsMatch(password, allowedPwdPattern))
                 return (false,
@@ -96,7 +92,6 @@ namespace UserRegistrationValidator
             if (!Regex.IsMatch(password, $"[{specialCharsEscaped}]"))
                 return (false, "Пароль должен содержать хотя бы один спецсимвол.");
 
-            // 4. Подтверждение пароля
             if (password != confirmPassword)
                 return (false, "Пароль и подтверждение не совпадают.");
 
@@ -105,18 +100,18 @@ namespace UserRegistrationValidator
 
         private static bool IsPhoneFormat(string s)
         {
-            // Простейшая проверка: начинается с '+' и содержит дефисы
+            
             return s.StartsWith("+") && s.Contains("-");
         }
 
         private static bool IsEmailFormat(string s)
         {
-            // Содержит '@' и '.' после него
+            
             return s.Contains("@") && s.LastIndexOf('.') > s.IndexOf('@');
         }
     }
 
-    // Маскирование пароля (детерминированное)
+    // Маскирование
     public static class PasswordMasker
     {
         public static string Mask(string password)
@@ -157,9 +152,9 @@ namespace UserRegistrationValidator
 
         private static void WriteLog(string message)
         {
-            // Консоль
+            
             Console.WriteLine(message);
-            // Файл
+            
             lock (fileLock)
             {
                 try
@@ -174,42 +169,122 @@ namespace UserRegistrationValidator
         }
     }
 
+
+
     class Program
     {
         static void Main(string[] args)
         {
-            // Тестовые сценарии (можно заменить на ввод с консоли)
-            var testCases = new[]
+            Console.WriteLine("Выберите режим работы:");
+            Console.WriteLine("1 - Ручной ввод данных");
+            Console.WriteLine("2 - Запуск автоматических тестов");
+            Console.Write("Ваш выбор: ");
+
+            string choice = Console.ReadLine();
+
+            if (choice == "1")
             {
-                // Успешные случаи
-                ("valid_user", "Пароль1!", "Пароль1!"),
-                ("user_123", "МойПароль2@", "МойПароль2@"),
-                ("+7-999-123-4567", "Тест123$", "Тест123$"),
-                ("test@mail.ru", "АБВгдеж3#", "АБВгдеж3#"),
+                ManualInput();
+            }
+            else if (choice == "2")
+            {
+                RunTests();
+            }
+            else
+            {
+                Console.WriteLine("Неверный выбор. Запуск тестов по умолчанию.");
+                RunTests();
+            }
 
-                // Ошибки логина
-                ("", "pass", "pass"),                       // пустой
-                ("abc", "pass", "pass"),                    // короткий строковый
-                ("user%name", "pass", "pass"),              // запрещённый символ
-                ("+7-12-345-6789", "pass", "pass"),         // плохой телефон
-                ("bad@email", "pass", "pass"),              // плохой email
-                ("admin", "pass", "pass"),                  // запрещённый логин
+            Console.WriteLine("\nВсе операции завершены. Лог записан в файл registration.log");
+            Console.ReadKey();
+        }
 
-                // Ошибки пароля
-                ("newUser", "", ""),                        // пустой
-                ("newUser", "12345", "12345"),              // короткий
-                ("newUser", "Password1", "Password1"),      // нет кириллицы
-                ("newUser", "пароль", "пароль"),            // нет цифры и спецсимвола
-                ("newUser", "Пароль1", "Пароль2"),          // не совпадает подтверждение
-                ("newUser", "пароль1!", "пароль1!"),        // нет заглавной
-                ("newUser", "ПАРОЛЬ1!", "ПАРОЛЬ1!"),        // нет строчной
-                ("newUser", "Пароль!@", "Пароль!@"),        // нет цифры
-                ("newUser", "Пароль123", "Пароль123"),      // нет спецсимвола
-            };
+        
+        static void ManualInput()
+        {
+            Console.WriteLine("\n=== РЕЖИМ РУЧНОГО ВВОДА ===");
+            Console.WriteLine("Введите данные для проверки регистрации");
+
+            Console.Write("Логин: ");
+            string login = Console.ReadLine() ?? "";
+
+            Console.Write("Пароль: ");
+            string password = Console.ReadLine() ?? "";
+
+            Console.Write("Подтверждение пароля: ");
+            string confirm = Console.ReadLine() ?? "";
+
+            // Валидация
+            var (success, message) = RegistrationValidator.Validate(login, password, confirm);
+            string maskedPwd = PasswordMasker.Mask(password);
+            string maskedConfirm = PasswordMasker.Mask(confirm);
+
+            Console.WriteLine($"\n=== Результат проверки ===");
+            Console.WriteLine($"Логин: {login}");
+            Console.WriteLine($"Пароль: {maskedPwd}");
+            Console.WriteLine($"Подтверждение: {maskedConfirm}");
+
+            if (success)
+            {
+                Console.WriteLine("Результат: True - Регистрация успешна!");
+                Logger.LogSuccess(login, maskedPwd, maskedConfirm);
+            }
+            else
+            {
+                Console.WriteLine($"Результат: False");
+                Console.WriteLine($"Ошибка: {message}");
+                Logger.LogFailure(login, maskedPwd, maskedConfirm, message);
+            }
+
+            
+            Console.Write("\nХотите проверить другие данные? (y/n): ");
+            if (Console.ReadLine()?.ToLower() == "y")
+            {
+                ManualInput();
+            }
+        }
+
+        
+        static void RunTests()
+        {
+            Console.WriteLine("\n=== РЕЖИМ АВТОМАТИЧЕСКИХ ТЕСТОВ ===");
+
+            var testCases = new List<(string login, string password, string confirm)>
+        {
+            // Успешные случаи
+            ("valid_user", "Пароль1!", "Пароль1!"),
+            ("user_123", "МойПароль2@", "МойПароль2@"),
+            ("+7-999-123-4567", "Тест123$", "Тест123$"),
+            ("test@mail.ru", "АБВгдеж3#", "АБВгдеж3#"),
+    
+            // Ошибки логина
+            ("", "pass", "pass"),                       // пустой
+            ("abc", "pass", "pass"),                    // короткий строковый
+            ("user%name", "pass", "pass"),              // запрещённый символ
+            ("+7-12-345-6789", "pass", "pass"),         // плохой телефон
+            ("bad@email", "pass", "pass"),              // плохой email
+            ("admin", "pass", "pass"),                  // запрещённый логин
+    
+            // Ошибки пароля
+            ("newUser", "", ""),                        // пустой
+            ("newUser", "12345", "12345"),              // короткий
+            ("newUser", "Password1", "Password1"),      // нет кириллицы
+            ("newUser", "пароль", "пароль"),            // нет цифры и спецсимвола
+            ("newUser", "Пароль1!", "Пароль2!"),          // не совпадает подтверждение
+            ("newUser", "пароль1!", "пароль1!"),        // нет заглавной
+            ("newUser", "ПАРОЛЬ1!", "ПАРОЛЬ1!"),        // нет строчной
+            ("newUser", "Пароль!@", "Пароль!@"),        // нет цифры
+            ("newUser", "Пароль123", "Пароль123"),      // нет спецсимвола
+        };
+
+            int passedTests = 0;
+            int failedTests = 0;
 
             foreach (var (login, password, confirm) in testCases)
             {
                 Console.WriteLine($"\n=== Проверка: логин='{login}' пароль='{password}' подтверждение='{confirm}' ===");
+
                 var (success, message) = RegistrationValidator.Validate(login, password, confirm);
                 string maskedPwd = PasswordMasker.Mask(password);
                 string maskedConfirm = PasswordMasker.Mask(confirm);
@@ -218,16 +293,20 @@ namespace UserRegistrationValidator
                 {
                     Console.WriteLine("Результат: True");
                     Logger.LogSuccess(login, maskedPwd, maskedConfirm);
+                    passedTests++;
                 }
                 else
                 {
                     Console.WriteLine($"Результат: False, ошибка: {message}");
                     Logger.LogFailure(login, maskedPwd, maskedConfirm, message);
+                    failedTests++;
                 }
             }
 
-            Console.WriteLine("\nВсе тесты завершены. Лог записан в файл registration.log");
-            Console.ReadKey();
+            Console.WriteLine($"\n=== ИТОГИ ТЕСТИРОВАНИЯ ===");
+            Console.WriteLine($"Всего тестов: {testCases.Count}");
+            Console.WriteLine($"Успешных: {passedTests}");
+            Console.WriteLine($"Проваленных: {failedTests}");
         }
     }
 }
