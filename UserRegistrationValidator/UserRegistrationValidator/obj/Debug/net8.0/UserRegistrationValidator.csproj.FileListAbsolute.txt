@@ -1,0 +1,14 @@
+C:\Users\LitovchenkoAA\source\repos\UserRegistrationValidator\UserRegistrationValidator\bin\Debug\net8.0\UserRegistrationValidator.exe
+C:\Users\LitovchenkoAA\source\repos\UserRegistrationValidator\UserRegistrationValidator\bin\Debug\net8.0\UserRegistrationValidator.deps.json
+C:\Users\LitovchenkoAA\source\repos\UserRegistrationValidator\UserRegistrationValidator\bin\Debug\net8.0\UserRegistrationValidator.runtimeconfig.json
+C:\Users\LitovchenkoAA\source\repos\UserRegistrationValidator\UserRegistrationValidator\bin\Debug\net8.0\UserRegistrationValidator.dll
+C:\Users\LitovchenkoAA\source\repos\UserRegistrationValidator\UserRegistrationValidator\bin\Debug\net8.0\UserRegistrationValidator.pdb
+C:\Users\LitovchenkoAA\source\repos\UserRegistrationValidator\UserRegistrationValidator\obj\Debug\net8.0\UserRegistrationValidator.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\LitovchenkoAA\source\repos\UserRegistrationValidator\UserRegistrationValidator\obj\Debug\net8.0\UserRegistrationValidator.AssemblyInfoInputs.cache
+C:\Users\LitovchenkoAA\source\repos\UserRegistrationValidator\UserRegistrationValidator\obj\Debug\net8.0\UserRegistrationValidator.AssemblyInfo.cs
+C:\Users\LitovchenkoAA\source\repos\UserRegistrationValidator\UserRegistrationValidator\obj\Debug\net8.0\UserRegistrationValidator.csproj.CoreCompileInputs.cache
+C:\Users\LitovchenkoAA\source\repos\UserRegistrationValidator\UserRegistrationValidator\obj\Debug\net8.0\UserRegistrationValidator.dll
+C:\Users\LitovchenkoAA\source\repos\UserRegistrationValidator\UserRegistrationValidator\obj\Debug\net8.0\refint\UserRegistrationValidator.dll
+C:\Users\LitovchenkoAA\source\repos\UserRegistrationValidator\UserRegistrationValidator\obj\Debug\net8.0\UserRegistrationValidator.pdb
+C:\Users\LitovchenkoAA\source\repos\UserRegistrationValidator\UserRegistrationValidator\obj\Debug\net8.0\UserRegistrationValidator.genruntimeconfig.cache
+C:\Users\LitovchenkoAA\source\repos\UserRegistrationValidator\UserRegistrationValidator\obj\Debug\net8.0\ref\UserRegistrationValidator.dll
